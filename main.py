@@ -3,7 +3,7 @@ import random
 import time
 import numpy as np
 from PyQt5.QtWidgets import QWidget, QApplication, QLabel
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QColor
 from PyQt5.QtCore import QThread, pyqtSignal
 from queue import Queue
 
@@ -30,13 +30,16 @@ class myThread(QThread):
                 time.sleep(0.05)
                 count += 1
                 if count == 5:
+                    self.handle.success.setVisible(False)
+                    self.handle.success.move(-1, -1)
                     break
                 self.handle.move(self.x[idx], self.y[idx])
                 continue
             self.handle.move(self.x[idx], self.y[idx])
             now_loc = self.mouse_loc[self.idx]
             if now_loc[0] < self.x[idx]+150 and now_loc[0] > self.x[idx] and now_loc[1] < self.y[idx] + 70 and now_loc[1] > self.y[idx]:
-                print("+5")
+                self.handle.success.move(self.x[idx], self.y[idx])
+                self.handle.success.setVisible(True)
                 flag = True
             time.sleep(0.05)
         self.handle.setVisible(False)
@@ -52,6 +55,9 @@ class myLabel(QLabel):
         self.setVisible(False)
         self.setPixmap(Qpixmap)
         # self.setObjectName("LOGO" + str(idx))
+        self.success = QLabel(parent)
+        self.success.setPixmap(QPixmap("D:\\文件\\OneDrive - University of Macau\\20211122\\5points.jpg"))
+        self.success.setVisible(False)
 
     def timerEvent(self, event):
         self.killTimer(self.p.id_list[self.idx].get())
@@ -69,23 +75,25 @@ class Main(QWidget):
         super().__init__()
         self.widget = offerWinget(self)
         self.widget.setGeometry(-100, -150, 1600, 1200)
+        self.setObjectName("MainWindow")
+        self.setStyleSheet("#MainWindow{background-color: white}")
         self.setWindowTitle("Offer收割机")
         # 实验室电脑
-        self.baidu = QPixmap("D:\\onedrive\\OneDrive - University of Macau\\20211122\\百度.jpg")
-        self.zijie = QPixmap("D:\\onedrive\\OneDrive - University of Macau\\20211122\\字节跳动.jpg")
-        self.weiruan = QPixmap("D:\\onedrive\\OneDrive - University of Macau\\20211122\\微软.jpg")
-        self.weilai = QPixmap("D:\\onedrive\\OneDrive - University of Macau\\20211122\\蔚来.jpg")
-        self.xiapi = QPixmap("D:\\onedrive\\OneDrive - University of Macau\\20211122\\虾皮.png")
-        self.xiaohongshu = QPixmap("D:\\onedrive\\OneDrive - University of Macau\\20211122\\小红书.png")
-        self.xiaomi = QPixmap("D:\\onedrive\\OneDrive - University of Macau\\20211122\\小米.png")
+        # self.baidu = QPixmap("D:\\onedrive\\OneDrive - University of Macau\\20211122\\百度.jpg")
+        # self.zijie = QPixmap("D:\\onedrive\\OneDrive - University of Macau\\20211122\\字节跳动.jpg")
+        # self.weiruan = QPixmap("D:\\onedrive\\OneDrive - University of Macau\\20211122\\微软.jpg")
+        # self.weilai = QPixmap("D:\\onedrive\\OneDrive - University of Macau\\20211122\\蔚来.jpg")
+        # self.xiapi = QPixmap("D:\\onedrive\\OneDrive - University of Macau\\20211122\\虾皮.png")
+        # self.xiaohongshu = QPixmap("D:\\onedrive\\OneDrive - University of Macau\\20211122\\小红书.png")
+        # self.xiaomi = QPixmap("D:\\onedrive\\OneDrive - University of Macau\\20211122\\小米.png")
         # Laptop
-        # self.baidu = QPixmap("D:\\文件\\OneDrive - University of Macau\\20211122\\百度.jpg")
-        # self.zijie = QPixmap("D:\\文件\\OneDrive - University of Macau\\20211122\\字节跳动.jpg")
-        # self.weiruan = QPixmap("D:\\文件\\OneDrive - University of Macau\\20211122\\微软.jpg")
-        # self.weilai = QPixmap("D:\\文件\\OneDrive - University of Macau\\20211122\\蔚来.jpg")
-        # self.xiapi = QPixmap("D:\\文件\\OneDrive - University of Macau\\20211122\\虾皮.png")
-        # self.xiaohongshu = QPixmap("D:\\文件\\OneDrive - University of Macau\\20211122\\小红书.png")
-        # self.xiaomi = QPixmap("D:\\文件\\OneDrive - University of Macau\\20211122\\小米.png")
+        self.baidu = QPixmap("D:\\文件\\OneDrive - University of Macau\\20211122\\百度.jpg")
+        self.zijie = QPixmap("D:\\文件\\OneDrive - University of Macau\\20211122\\字节跳动.jpg")
+        self.weiruan = QPixmap("D:\\文件\\OneDrive - University of Macau\\20211122\\微软.jpg")
+        self.weilai = QPixmap("D:\\文件\\OneDrive - University of Macau\\20211122\\蔚来.jpg")
+        self.xiapi = QPixmap("D:\\文件\\OneDrive - University of Macau\\20211122\\虾皮.png")
+        self.xiaohongshu = QPixmap("D:\\文件\\OneDrive - University of Macau\\20211122\\小红书.png")
+        self.xiaomi = QPixmap("D:\\文件\\OneDrive - University of Macau\\20211122\\小米.png")
 
         self.label1 = myLabel(self, self.baidu, 0)
         self.label2 = myLabel(self, self.zijie, 1)
@@ -100,7 +108,6 @@ class Main(QWidget):
         self.now_squeue = Queue()
         self.loc_list = [(-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1)]
 
-
     def timerEvent(self, event):
         idx = random.randint(0, 6)
         id_ = self.label_list[idx].startTimer(1000) #TODO 连续两个相同的，上一个没执行完下一个就开始？
@@ -110,6 +117,7 @@ class Main(QWidget):
         # logo_obj = self.findChild(QLabel, "LOGO0")
         for idx in range(7):
             self.loc_list[idx] = (event.x(), event.y())
+
 
 class offerWinget(QWidget):
     def __init__(self, parent=None):
