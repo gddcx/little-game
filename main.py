@@ -12,7 +12,7 @@ from PyQt5.QtGui import QPixmap, QColor, QPalette, QFont
 from PyQt5.QtCore import QThread, pyqtSignal
 from queue import Queue
 from PyQt5.QtCore import Qt
-
+from PyQt5.QtMultimedia import QSound
 
 # for throw logo
 class myThread(QThread):
@@ -23,7 +23,7 @@ class myThread(QThread):
         self.mouse_loc = mouse_loc
         self.idx = idx
         random.seed(time.time())
-        mid = random.randint(500, 1100)
+        mid = random.randint(300, 1100)
         if random.choice([0, 1]) == 1:
             self.x = np.linspace(mid - 300, mid + 300, 30)
         else:
@@ -100,6 +100,12 @@ class Main(QWidget):
         self.setObjectName("MainWindow")
         self.setStyleSheet("#MainWindow{background-color: white}")
         self.setWindowTitle("Offer收割机")
+        # self.sound = QSound("D:\\onedrive\\OneDrive - University of Macau\\20211122\\生日快乐.wav", self) # 生日歌
+        # self.sound = QSound("D:\\onedrive\\OneDrive - University of Macau\\20211122\\水果隐者.wav", self)  # 生日歌
+        # self.sound.play()
+        # self.sound.setLoops(100)
+        # self.sound = QSound("D:\\onedrive\\OneDrive - University of Macau\\20211122\\切.wav", self)
+
         # 实验室电脑
         self.logo_list = [QPixmap("D:\\onedrive\\OneDrive - University of Macau\\20211122\\百度.jpg"),
                           QPixmap("D:\\onedrive\\OneDrive - University of Macau\\20211122\\字节跳动.jpg"),
@@ -146,7 +152,7 @@ class Main(QWidget):
 
     def timerEvent(self, event):
         idx = random.randint(0, len(self.label_list)-1)
-        id_ = self.label_list[idx][0](self, self.label_list[idx][1], self.label_list[idx][2]).startTimer(1000) # 这里才创建对象，就能同时抛出多个同一公司logo
+        id_ = self.label_list[idx][0](self, self.label_list[idx][1], self.label_list[idx][2]).startTimer(800) # 这里才创建对象，就能同时抛出多个同一公司logo
         self.id_list[idx].put(id_)
 
     def mouseMoveEvent(self, event):
@@ -164,6 +170,6 @@ class offerWinget(QWidget):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     myWin = Main()
-    myWin.startTimer(1000)
+    myWin.startTimer(800)
     myWin.show()
     sys.exit(app.exec_())
